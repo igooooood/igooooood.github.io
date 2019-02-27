@@ -13,14 +13,14 @@
         }
     }
 
-    actionsCompletion = () => {
+    showRestartPopup = () => {
         toggleDisabledButtons(true);
         popup.classList.add('popup-animation');
-        restartBtn.addEventListener('click', onResetData);
+        restartBtn.addEventListener('click', resetData);
     }
 
     // удаляем все значения с элементов
-    onResetData = () => {
+    resetData = () => {
         for (let i = 0; i < playngFieldData.length; i++) {
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].innerText = '';
@@ -32,12 +32,12 @@
         player = 'X';
         winner.innerText = ''
 
-        restartBtn.removeEventListener("click", onResetData);
+        restartBtn.removeEventListener("click", resetData);
         toggleDisabledButtons(false);
         popup.classList.remove('popup-animation');
     }
 
-    isWinner = (arr, value) => {
+    calculateWinner = (arr, value) => {
         if (
                 (arr[0] === value && arr[1] === value && arr[2] === value) ||
                 (arr[3] === value && arr[4] === value && arr[5] === value) ||
@@ -48,19 +48,19 @@
                 (arr[2] === value && arr[4] === value && arr[6] === value) ||
                 (arr[0] === value && arr[4] === value && arr[8] === value)
             ) {
-                actionsCompletion();
-                (value === 'X') ? winner.innerText = 'Player one win' : winner.innerText = 'Player two win';
+                showRestartPopup();
+                (value === 'X') ? winner.innerText = 'Первый игрок победил!' : winner.innerText = 'Второй игрок победил!';
             } else {
                 if (arr.every(item => item !== '')) {
-                    actionsCompletion();
-                    winner.innerText = 'Draw'
+                    showRestartPopup();
+                    winner.innerText = 'Ничья'
                 }
             }
     }
 
     nextPlayer = (value) => value === 'X' ? player = 'O' : player = 'X';
 
-    onWriteValue = (event, value) => {
+    writeValue = (event, value) => {
         // узнаём id элемента
         let numberElement = parseInt(event.target.dataset.index);
 
@@ -70,14 +70,14 @@
                 playngFieldData[numberElement] = value;
                 event.target.innerText = value;
                 nextPlayer(value);
-                isWinner(playngFieldData, value);
+                calculateWinner(playngFieldData, value);
             }
         }
     }
 
     // обработчик клика по игровому полю
     handleClick = (event) => {
-        onWriteValue(event, player);
+        writeValue(event, player);
     }
 
     renderItem = (id) => {
